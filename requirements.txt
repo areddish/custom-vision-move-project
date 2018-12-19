@@ -1,1 +1,1 @@
-azure-cognitiveservices-vision-customvision=0.3.0
+azure-cognitiveservices-vision-customvision==0.3.0
