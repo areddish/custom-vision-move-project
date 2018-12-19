@@ -12,7 +12,7 @@ From the settings page of the destination Subscription (_where you want to move 
 
 To run the script you first install the requirements
 ```
-pip install requirements
+pip install -r requirements.txt
 ```
 
 Then run the python script with the necessary information:
