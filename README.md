@@ -1,13 +1,13 @@
 # Utility for moving projects between subscriptions for Microsoft Cognitive Services - Custom Vision service.
-Sample script to move a Custom Vision project from one Subscription/Region to another.
+Sample script to copy a Custom Vision project from one Subscription/Region to another.
 
 # Running this script
 
 To run you need three pieces of information:
-From the settings page of the source Subscription (_where you wnat to move *from*_)
+From the settings page of the source Subscription (_where you want to copy *from*_)
 *Source Training Key
 *Source Project Id
-From the settings page of the destination Subscription (_where you want to move *to*_)
+From the settings page of the destination Subscription (_where you want to copy *to*_)
 *Destination Training Key
 
 To run the script you first install the requirements
