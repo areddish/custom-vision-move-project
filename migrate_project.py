@@ -7,7 +7,7 @@ import time
 import argparse
 
 from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient
-from azure.cognitiveservices.vision.customvision.training.models import ImageUrlCreateBatch, ImageUrlCreateEntry, Region, ImageTag
+from azure.cognitiveservices.vision.customvision.training.models import ImageUrlCreateBatch, ImageUrlCreateEntry, Region, Tag
 
 def migrate_tags(src_trainer, dest_trainer, project_id, dest_project_id):
     tags =  src_trainer.get_tags(project_id)
@@ -37,15 +37,17 @@ def migrate_images(src_trainer, dest_trainer, project_id, dest_project_id, creat
                     print ("Found region:", r.region_id, r.tag_id, r.left, r.top, r.width, r.height)
                     regions.append(Region(tag_id=created_tags[r.tag_id], left=r.left, top=r.top, width=r.width, height=r.height))
 
-            tag_ids=[]
+            tag_ids = []
             if i.tags != None:
                 for t in i.tags:
                     print ("Found tag:", t.tag_name, t.tag_id)
-                    tag_ids.append(ImageTag(tag_id=t.tag_id))
+                    tag_ids.append(created_tags[t.tag_id])
             
-            if regions.count > 0:
+            if len(regions) > 0:
+                print ("Creating entry with regions")
                 entry = ImageUrlCreateEntry(url=i.resized_image_uri, regions=regions)
             else:
+                print ("Creating entry with tags")
                 entry = ImageUrlCreateEntry(url=i.resized_image_uri, tag_ids=tag_ids)
 
             dest_trainer.create_images_from_urls(dest_project_id, images=[entry])
