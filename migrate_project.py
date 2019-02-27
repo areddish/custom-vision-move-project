@@ -6,7 +6,7 @@ import time
 
 import argparse
 
-from azure.cognitiveservices.vision.customvision.training import training_api
+from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient
 from azure.cognitiveservices.vision.customvision.training.models import ImageUrlCreateBatch, ImageUrlCreateEntry, Region
 
 def migrate_tags(src_trainer, dest_trainer, project_id, dest_project_id):
@@ -29,13 +29,13 @@ def migrate_images(src_trainer, dest_trainer, project_id, dest_project_id, creat
         print ("Getting", count_to_migrate, "images")
         images = src_trainer.get_tagged_images(project_id, take=count_to_migrate, skip=migrated)
         for i in images:
-            print ("Migrating", i.id, i.image_uri)
+            print ("Migrating", i.id, i.resized_image_uri)
             regions = []
             for r in i.regions:
                 print ("Found region:", r.region_id, r.tag_id, r.left, r.top, r.width, r.height)
                 regions.append(Region(tag_id=created_tags[r.tag_id], left=r.left, top=r.top, width=r.width, height=r.height))
             
-            entry = ImageUrlCreateEntry(url=i.image_uri, regions=regions)
+            entry = ImageUrlCreateEntry(url=i.resized_image_uri, regions=regions)
             dest_trainer.create_images_from_urls(dest_project_id, images=[entry])
         migrated += count_to_migrate
         count -= count_to_migrate
@@ -83,10 +83,10 @@ if __name__ == "__main__":
     print ("Collecting information for source project:", args.project_id)
 
     # Client for Source
-    src_trainer = training_api.TrainingApi(args.source_training_key, base_url=args.source_url)
+    src_trainer = CustomVisionTrainingClient(args.source_training_key, endpoint=args.source_url)
 
     # Client for Destination
-    dest_trainer = training_api.TrainingApi(args.destination_training_key, base_url=args.destination_url)
+    dest_trainer = CustomVisionTrainingClient(args.destination_training_key, endpoint=args.destination_url)
 
     destination_project = migrate_project(src_trainer, dest_trainer, args.project_id)
     tags = migrate_tags(src_trainer, dest_trainer, args.project_id, destination_project.id)
