@@ -17,8 +17,9 @@ pip install -r requirements.txt
 
 Then run the python script with the necessary information:
 ```Python
-python migrate_project.py -p <project id> -s <source training key> -d <destination training key>
+python migrate_project.py -p <project id> -s <source training key> -d <destination training key> [-se <source endpoint>] [-de <destination endpoint>] 
 ```
+Endpoint is Custom Vision endpoint server url, default value is https://southcentralus.api.cognitive.microsoft.com
 
 This script will recreate a project with the destination training-key and download/upload all of the tags, regions, and images. It will leave you with a new project in your new subscription with no trained iterations, from here you can train a new iteration.
 
