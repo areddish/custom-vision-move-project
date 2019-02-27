@@ -31,11 +31,16 @@ def migrate_images(src_trainer, dest_trainer, project_id, dest_project_id, creat
         for i in images:
             print ("Migrating", i.id, i.resized_image_uri)
             regions = []
-            for r in i.regions:
-                print ("Found region:", r.region_id, r.tag_id, r.left, r.top, r.width, r.height)
-                regions.append(Region(tag_id=created_tags[r.tag_id], left=r.left, top=r.top, width=r.width, height=r.height))
+            if i.regions != None:
+                for r in i.regions:
+                    print ("Found region:", r.region_id, r.tag_id, r.left, r.top, r.width, r.height)
+                    regions.append(Region(tag_id=created_tags[r.tag_id], left=r.left, top=r.top, width=r.width, height=r.height))
             
-            entry = ImageUrlCreateEntry(url=i.resized_image_uri, regions=regions)
+            if regions.count > 0:
+                entry = ImageUrlCreateEntry(url=i.resized_image_uri, regions=regions)
+            else:
+                    entry = ImageUrlCreateEntry(url=i.resized_image_uri)
+
             dest_trainer.create_images_from_urls(dest_project_id, images=[entry])
         migrated += count_to_migrate
         count -= count_to_migrate
@@ -51,11 +56,16 @@ def migrate_images(src_trainer, dest_trainer, project_id, dest_project_id, creat
         for i in images:
             print ("Migrating", i.id, i.image_uri)
             regions = []
-            for r in i.regions:
-                print ("Found region:", r.region_id, r.tag_id, r.left, r.top, r.width, r.height)
-                regions.append(Region(tag_id=created_tags[r.tag_id], left=r.left, top=r.top, width=r.width, height=r.height))
+            if i.regions != None:
+                for r in i.regions:
+                    print ("Found region:", r.region_id, r.tag_id, r.left, r.top, r.width, r.height)
+                    regions.append(Region(tag_id=created_tags[r.tag_id], left=r.left, top=r.top, width=r.width, height=r.height))
             
-            entry = ImageUrlCreateEntry(url=i.image_uri, regions=regions)
+            if regions.count > 0:
+                entry = ImageUrlCreateEntry(url=i.image_uri, regions=regions)
+            else:
+                    ImageUrlCreateEntry(url=i.image_uri) 
+
             dest_trainer.create_images_from_urls(dest_project_id, images=[entry])
         migrated += count_to_migrate
         count -= count_to_migrate
