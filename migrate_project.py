@@ -71,7 +71,9 @@ if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("-p", "--project", action="store", type=str, help="Source project ID", dest="project_id", default=None)
     arg_parser.add_argument("-s", "--src", action="store", type=str, help="Source Training-Key", dest="source_training_key", default=None)
+    arg_parser.add_argument("-se", "--srcendpoint", action="store", type=str, help="Source endpoint URL", dest="source_url", default=None)
     arg_parser.add_argument("-d", "--dest", action="store", type=str, help="Destination Training-Key", dest="destination_training_key", default=None)
+    arg_parser.add_argument("-de", "--destendpoint", action="store", type=str, help="Destination endpoint URL", dest="destination_url", default=None)
     args = arg_parser.parse_args()
 
     if (not args.project_id or not args.source_training_key or not args.destination_training_key):
@@ -81,10 +83,10 @@ if __name__ == "__main__":
     print ("Collecting information for source project:", args.project_id)
 
     # Client for Source
-    src_trainer = training_api.TrainingApi(args.source_training_key)
+    src_trainer = training_api.TrainingApi(args.source_training_key, base_url=args.source_url)
 
     # Client for Destination
-    dest_trainer = training_api.TrainingApi(args.destination_training_key)
+    dest_trainer = training_api.TrainingApi(args.destination_training_key, base_url=args.destination_url)
 
     destination_project = migrate_project(src_trainer, dest_trainer, args.project_id)
     tags = migrate_tags(src_trainer, dest_trainer, args.project_id, destination_project.id)
